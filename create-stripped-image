@@ -92,7 +92,7 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 mkdir -p $DIR/fs
 docker run -v $PWD/$DIR/fs:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/create-stripped-image-export.sh -d /export $VERBOSE $PACKAGES $FILES
+	  /mybin/create-stripped-image-export -d /export $VERBOSE $PACKAGES $FILES
 
 cat > $DIR/Dockerfile <<!
 FROM scratch
