@@ -3,7 +3,7 @@
 #	create-stripped-image - strips the bare essentials from an image and exports them
 #
 # SYNOPSIS
-#	create-stripped-image -i image-name -t target-image-name -t [-p package | -f file] [-v] 
+#	create-stripped-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
 #			
 #
 # OPTIONS
@@ -11,6 +11,7 @@
 #	-t target-image-name	the image name of the stripped image
 #	-p package		package to include from image, multiple -p allowed.
 #	-f file			file to include from image, multiple -f allowed.
+#	-x port			to expose.
 #	-v			verbose
 #
 # DESCRIPTION
@@ -41,7 +42,7 @@ function usage() {
 
 function parse_commandline() {
 
-	while getopts "vi:t:p:f:" OPT; do
+	while getopts "vi:t:p:f:x:" OPT; do
 	    case "$OPT" in
 		v)
 		    VERBOSE=-v
@@ -57,6 +58,9 @@ function parse_commandline() {
 		    ;;
 		t)
 		    TARGET_IMAGE_NAME="$OPTARG"
+		    ;;
+		x)
+		    EXPOSE_PORTS="$EXPOSE_PORTS $OPTARG"
 		    ;;
 		*)
 		    usage
@@ -89,8 +93,7 @@ DIR=create-stripped-image-$$
 mkdir -p $DIR/export
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-mkdir -p $DIR/fs
-docker run -v $PWD/$DIR/fs:/export \
+docker run -v $PWD/$DIR/export:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
 	  /mybin/create-stripped-image-export -d /export $VERBOSE $PACKAGES $FILES
 
@@ -98,6 +101,10 @@ cat > $DIR/Dockerfile <<!
 FROM scratch
 ADD export /
 !
+
+for PORT in $EXPOSE_PORTS ; do
+	echo EXPOSE $PORT >> $DIR/Dockerfile
+done
 
 (
 	cd $DIR
