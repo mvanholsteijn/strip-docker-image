@@ -3,7 +3,12 @@
 This utilities strips everything you do not need from an image and create a new image with just the bare necessities.
 
 ## Synopsis
-	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
+	strip-docker-image 	-i image-name 
+						-t target-image-name 
+						[-p package]
+						[-f file]
+						[-x expose-port] 
+						[-v] 
 			
 ## Options
 	-i image-name			to strip
