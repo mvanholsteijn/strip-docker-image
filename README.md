@@ -1,45 +1,44 @@
 # Minimizing the size of standard docker images
 
-This is a utility to minimize the size of official docker images, so that it only contains the 
-bare necessities.
+This utilities strips everything you do not need from an image and create a new image with just the bare necessities.
+
+## Synopsis
+	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
+			
+## Options
+	-i image-name			to strip
+	-t target-image-name	the image name of the stripped image
+	-p package				package to include from image, multiple -p allowed.
+	-f file					file to include from image, multiple -f allowed.
+	-x port					to expose.
+	-v						verbose.
+
+## Description
+creates a new Docker image which contains only selected packages and files from the source image.
 
 Why is this useful?
 
 1. It minimizes the size of your docker images, which speeds up load times
 2. It minimizes the attack surface: if you get in the container, there is nothing there..
 
-## Synopsis
-	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
-			
-## Options
-	-i image-name		to strip
-	-t target-image-name	the image name of the stripped image
-	-p package		package to include from image, multiple -p allowed.
-	-f file			file to include from image, multiple -f allowed.
-	-x port			to expose.
-	-v			verbose
-
-## Description
-creates a new Docker image based on the scratch  which contains only the the source image of selected packages and files.
-
 ## Example
 The following example strips the nginx installation from the default NGiNX docker image,
 
 ```
 strip-docker-image -i nginx -t stripped-nginx  \
-	       -x 80 \
-	       -p nginx  \
-	       -f /etc/passwd \
-	       -f /etc/group \
-	       -f '/lib/*/libnss*' \
-	       -f /bin/ls \
-	       -f /bin/cat \
-	       -f /bin/sh \
-	       -f /bin/mkdir \
-	       -f /bin/ps \
-	       -f /var/run \
-	       -f /var/log/nginx \
-	       -f /var/cache/nginx
+						   -x 80 \
+						   -p nginx  \
+						   -f /etc/passwd \
+						   -f /etc/group \
+						   -f '/lib/*/libnss*' \
+						   -f /bin/ls \
+						   -f /bin/cat \
+						   -f /bin/sh \
+						   -f /bin/mkdir \
+						   -f /bin/ps \
+						   -f /var/run \
+						   -f /var/log/nginx \
+						   -f /var/cache/nginx
 ```
 Aside from the nginx package, I have added the files /etc/passwd, /etc/group and /lib/*/libnss* shared libraries 
 are necessary for getpwnam() to work correctly.
