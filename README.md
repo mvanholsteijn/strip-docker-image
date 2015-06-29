@@ -11,7 +11,7 @@ Why is this useful?
 The following example strips the nginx installation from the default NGiNX docker image,
 
 ```
-create-stripped-image -i nginx -t stripped-nginx  \
+strip-docker-image -i nginx -t stripped-nginx  \
 	       -x 80 \
 	       -p nginx  \
 	       -f /etc/passwd \
