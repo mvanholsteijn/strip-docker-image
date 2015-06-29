@@ -6,7 +6,7 @@ bare necessities.
 Why is this useful?
 
 1. It minimizes the size of your docker images, which speeds up load times
-2. It minimizes the attack surface, if you get in the container, there is nothing there..
+2. It minimizes the attack surface: if you get in the container, there is nothing there..
 
 ## Example
 The following example strips the nginx installation from the default NGiNX docker image,
