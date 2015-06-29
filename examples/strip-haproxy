@@ -1,5 +1,5 @@
 #!/bin/bash
-../bin/create-stripped-image -i haproxy -t stripped-haproxy  \
+../bin/strip-docker-image -i haproxy -t stripped-haproxy  \
 	-x 80 \
 	-f /usr/local/sbin/haproxy \
 	-f /usr/local/etc/haproxy \

@@ -1,9 +1,9 @@
 #!/bin/bash
 # NAME
-#	create-stripped-image - strips the bare essentials from an image and exports them
+#	strip-docker-image - strips the bare essentials from an image and exports them
 #
 # SYNOPSIS
-#	create-stripped-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
+#	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
 #			
 #
 # OPTIONS
@@ -21,7 +21,7 @@
 # EXAMPLE
 #	The following example strips the nginx installation from the default NGiNX docker image,
 #
-#        create-stripped-image -i nginx -t stripped-nginx  \
+#        strip-docker-image -i nginx -t stripped-nginx  \
 #			-p nginx  \
 #			-f /etc/passwd \
 #			-f /etc/group \
@@ -89,13 +89,13 @@ function parse_commandline() {
 
 parse_commandline "$@"
 
-DIR=create-stripped-image-$$
+DIR=strip-docker-image-$$
 mkdir -p $DIR/export
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 docker run -v $PWD/$DIR/export:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/create-stripped-image-export -d /export $VERBOSE $PACKAGES $FILES
+	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES $FILES
 
 cat > $DIR/Dockerfile <<!
 FROM scratch

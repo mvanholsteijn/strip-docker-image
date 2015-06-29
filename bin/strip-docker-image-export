@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # NAME
-#	create-stripped-image-export  - exports the bare essentials from a Docker image
+#	strip-docker-image-export  - exports the bare essentials from a Docker image
 #
 # SYNOPSIS
-#	create-stripped-image-export  [-d export-dir ] [-p package | -f file] [-v] 
+#	strip-docker-image-export  [-d export-dir ] [-p package | -f file] [-v] 
 #			
 #
 # OPTIONS
