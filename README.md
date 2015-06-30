@@ -70,4 +70,5 @@ docker run --name nginx -P -d --entrypoint /usr/sbin/nginx stripped-nginx  -g "d
 docker run --link nginx:stripped cargonauts/toolbox-networking curl -s -D - http://stripped
 ```
 
-
+## Caveats
+This utility requires bash, dpkg, tar, readlink and ldd to be installed in the container.
