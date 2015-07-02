@@ -12,4 +12,4 @@
 	       -f /var/run \
 	       -f /var/log/nginx \
 	       -f /var/cache/nginx \
-	       -f '/lib/*/libnss*'
+	       -f /lib/x86_64-linux-gnu
