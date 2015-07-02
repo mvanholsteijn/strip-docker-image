@@ -4,7 +4,6 @@
 	       -p nginx  \
 	       -f /etc/passwd \
 	       -f /etc/group \
-	       -f '/lib/*/libnss*' \
 	       -f /bin/ls \
 	       -f /bin/cat \
 	       -f /bin/sh \
@@ -12,5 +11,5 @@
 	       -f /bin/ps \
 	       -f /var/run \
 	       -f /var/log/nginx \
-	       -f /var/cache/nginx
-
+	       -f /var/cache/nginx \
+	       -f '/lib/*/libnss*' \
