@@ -102,7 +102,16 @@ function parse_commandline() {
 
 function print_file() {
 		if [ -e "$1" ] ; then
-			echo "$1"
+			test -n "$VERBOSE" && echo "INFO: analysing file file '$1'" >&2
+			if grep -Fxq "$1" $EXPORT_DIR/file_list
+			then
+				echo "$1" > /dev/null
+				test -n "$VERBOSE" && echo "INFO: ignoring already exists file '$1'" >&2
+			else
+				echo "$1"
+				echo "$1" >> $EXPORT_DIR/file_list
+				test -n "$VERBOSE" && echo "INFO: adding file '$1'" >&2
+			fi
 		else
 			test -n "$VERBOSE" && echo "INFO: ignoring not existent file '$1'" >&2
 		fi
@@ -153,13 +162,14 @@ function list_all_packages() {
 
 parse_commandline $@
 
+cp -f /dev/null $EXPORT_DIR/file_list
 
 tar czf - $(
 
 	(
 	list_all_packages $PACKAGES
 	list_dependencies $FILES
-	)  | sort -u
+	)  | sort -u | uniq
 
 ) | ( cd $EXPORT_DIR ; tar -xzh${VERBOSE}f - )
 
