@@ -4,7 +4,7 @@
 #
 # SYNOPSIS
 #	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
-#			
+#
 #
 # OPTIONS
 #	-i image-name		to strip
@@ -32,10 +32,10 @@
 #			-f /bin/mkdir \
 #			-f /bin/ps \
 #			-f /var/run \
-#			-f /var/log/nginx 
+#			-f /var/log/nginx
 #
 # AUTHOR
-#  Mark van Holsteijn 
+#  Mark van Holsteijn
 #
 # COPYRIGHT
 #
@@ -115,7 +115,7 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 docker run --rm -v $PWD/$DIR/export:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES $FILES
+	  /mybin/strip-docker-image-export -d /export "${VERBOSE} ${PACKAGES} ${FILES}"
 
 cat > $DIR/Dockerfile <<!
 FROM scratch

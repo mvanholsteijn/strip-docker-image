@@ -4,8 +4,8 @@
 #	strip-docker-image-export  - exports the bare essentials from a Docker image
 #
 # SYNOPSIS
-#	strip-docker-image-export  [-d export-dir ] [-p package | -f file] [-v] 
-#			
+#	strip-docker-image-export  [-d export-dir ] [-p package | -f file] [-v]
+#
 #
 # OPTIONS
 #	-d export-directory	to copy content to, defaults to /export.
@@ -39,9 +39,9 @@
 #			-d /export
 # CAVEATS
 #	requires an image that has a bash, readlink and ldd  installed.
-# 
+#
 # AUTHOR
-#  Mark van Holsteijn 
+#  Mark van Holsteijn
 #
 # COPYRIGHT
 #
@@ -145,13 +145,13 @@ function list_packages() {
         done
 }
 
-function list_all_packages() {	
+function list_all_packages() {
 	for i in "$@" ; do
 		list_packages "$i"
-	done 
+	done
 }
 
-parse_commandline "$@"
+parse_commandline $@
 
 
 tar czf - $(
