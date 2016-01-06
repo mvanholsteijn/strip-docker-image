@@ -143,11 +143,11 @@ function list_packages() {
 		else
 			DEPS=$(/usr/bin/rpm -ql $1)
 		fi
-		cat "$DEPS" | while read FILE ; do
+		while read FILE ; do
 			if [ ! -d "$FILE" ] ; then
 				list_dependencies "$FILE"
 			fi
-    done
+    done <<< "$DEPS"
 }
 
 function list_all_packages() {
