@@ -4,8 +4,8 @@
 #	strip-docker-image-export  - exports the bare essentials from a Docker image
 #
 # SYNOPSIS
-#	strip-docker-image-export  [-d export-dir ] [-p package | -f file] [-v] 
-#			
+#	strip-docker-image-export  [-d export-dir ] [-p package | -f file] [-v]
+#
 #
 # OPTIONS
 #	-d export-directory	to copy content to, defaults to /export.
@@ -19,7 +19,7 @@
 #	is copied, all dynamic libraries required by the executed are included too.
 #
 # EXAMPLE
-#	The following example strips the nginx installation from the default NGiNX docker image, 
+#	The following example strips the nginx installation from the default NGiNX docker image,
 #	and allows the files in ./export to be added to a scratch image.
 #
 #        docker run -v $PWD/export/:/export \
@@ -39,9 +39,9 @@
 #			-d /export
 # CAVEATS
 #	requires an image that has a bash, readlink and ldd  installed.
-# 
+#
 # AUTHOR
-#  Mark van Holsteijn 
+#  Mark van Holsteijn
 #
 # COPYRIGHT
 #
@@ -138,17 +138,22 @@ function list_dependencies() {
 }
 
 function list_packages() {
-        /usr/bin/dpkg -L $1 | while read FILE ; do
-		if [ ! -d "$FILE" ] ; then
-			list_dependencies "$FILE"
+		if command -v /usr/bin/dpkg -L $1 >/dev/null 2>&1; then
+			DEPS=$(/usr/bin/dpkg -L $1)
+		else
+			DEPS=$(/usr/bin/rpm -ql $1)
 		fi
-        done
+		cat "$DEPS" | while read FILE ; do
+			if [ ! -d "$FILE" ] ; then
+				list_dependencies "$FILE"
+			fi
+    done
 }
 
-function list_all_packages() {	
+function list_all_packages() {
 	for i in "$@" ; do
 		list_packages "$i"
-	done 
+	done
 }
 
 parse_commandline "$@"
@@ -162,4 +167,3 @@ tar czf - $(
 	)  | sort -u
 
 ) | ( cd $EXPORT_DIR ; tar -xzh${VERBOSE}f - )
-
