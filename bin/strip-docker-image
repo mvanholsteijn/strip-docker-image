@@ -113,9 +113,11 @@ DIR=strip-docker-image-$$
 mkdir -p $DIR/export
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-docker run -v $PWD/$DIR/export:/export \
+l_cid=`docker run -d -v $PWD/$DIR/export:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES $FILES
+	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES -f "$FILES"`
+
+docker wait $l_cid
 
 cat > $DIR/Dockerfile <<!
 FROM scratch
@@ -132,3 +134,4 @@ done
 )
 
 rm -rf $DIR
+docker rm $l_cid
