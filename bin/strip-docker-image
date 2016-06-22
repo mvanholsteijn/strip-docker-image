@@ -115,7 +115,7 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 docker run -v $PWD/$DIR/export:/export \
 	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES $FILES
+	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES -f "$FILES"
 
 cat > $DIR/Dockerfile <<!
 FROM scratch
