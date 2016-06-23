@@ -3,13 +3,13 @@
 This utilities strips everything you do not need from an image and create a new image with just the bare necessities.
 
 ## Synopsis
-	strip-docker-image 	-i image-name 
-						-t target-image-name 
+	strip-docker-image 	-i image-name
+						-t target-image-name
 						[-p package]
 						[-f file]
-						[-x expose-port] 
-						[-v] 
-			
+						[-x expose-port]
+						[-v]
+
 ## Options
 	-i image-name			to strip
 	-t target-image-name	the image name of the stripped image
@@ -45,7 +45,7 @@ strip-docker-image -i nginx -t stripped-nginx  \
 						   -f /var/log/nginx \
 						   -f /var/cache/nginx
 ```
-Aside from the nginx package, I have added the files /etc/passwd, /etc/group and /lib/*/libnss* shared libraries 
+Aside from the nginx package, I have added the files /etc/passwd, /etc/group and /lib/*/libnss* shared libraries
 are necessary for getpwnam() to work correctly.
 
 The directories /var/run, /var/log/nginx and /var/cache/nginx are required for NGiNX to operate.
@@ -71,4 +71,6 @@ docker run --link nginx:stripped cargonauts/toolbox-networking curl -s -D - http
 ```
 
 ## Caveats
-This utility requires bash, dpkg, tar, readlink and ldd to be installed in the container.
+This utility requires bash, tar, readlink, ldd, and either dpkg or rpm to be installed in the container.
+
+Note that on systems with rpm, you must specify full package names when using the -p switch, e.g. ```-p nginx-1.8.0-1.el7.ngx.x86_64```
