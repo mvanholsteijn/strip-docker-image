@@ -12,7 +12,7 @@
 #	-p package		package to include from image, multiple -p allowed.
 #	-f file			file to include from image, multiple -f allowed.
 #	-x port			to expose.
-#	-d Dockerfiles		to incorporate in the stripped image.
+#	-d Dockerfile		to incorporate in the stripped image.
 #	-v			verbose
 #
 # DESCRIPTION
@@ -57,7 +57,7 @@
 #
 
 function usage() {
-	echo "usage: $(basename $0) -i image-name -t stripped-image-name [-p package | -f file] [-v]" >&2
+	echo "usage: $(basename $0) -i image-name -t stripped-image-name [-d Dockerfile] [-p package | -f file] [-v]" >&2
 	echo "	$@" >&2
 }
 
