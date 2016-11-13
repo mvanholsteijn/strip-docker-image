@@ -3,8 +3,8 @@
 #	strip-docker-image - strips the bare essentials from an image and exports them
 #
 # SYNOPSIS
-#	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
-#			
+#	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-d Dockerfile] [-x expose-port] [-v]
+#
 #
 # OPTIONS
 #	-i image-name		to strip
@@ -12,6 +12,7 @@
 #	-p package		package to include from image, multiple -p allowed.
 #	-f file			file to include from image, multiple -f allowed.
 #	-x port			to expose.
+#	-d Dockerfiles		to incorporate in the stripped image.
 #	-v			verbose
 #
 # DESCRIPTION
@@ -32,10 +33,10 @@
 #			-f /bin/mkdir \
 #			-f /bin/ps \
 #			-f /var/run \
-#			-f /var/log/nginx 
+#			-f /var/log/nginx
 #
 # AUTHOR
-#  Mark van Holsteijn 
+#  Mark van Holsteijn
 #
 # COPYRIGHT
 #
@@ -62,7 +63,7 @@ function usage() {
 
 function parse_commandline() {
 
-	while getopts "vi:t:p:f:x:" OPT; do
+	while getopts "vi:t:p:f:x:d:" OPT; do
 	    case "$OPT" in
 		v)
 		    VERBOSE=-v
@@ -81,6 +82,9 @@ function parse_commandline() {
 		    ;;
 		x)
 		    EXPOSE_PORTS="$EXPOSE_PORTS $OPTARG"
+		    ;;
+		d)
+		    DOCKERFILES="$DOCKERFILES \"$OPTARG\""
 		    ;;
 		*)
 		    usage
@@ -123,6 +127,12 @@ cat > $DIR/Dockerfile <<!
 FROM scratch
 ADD export /
 !
+
+for DOCKERFILE in $DOCKERFILES ; do
+    sed ':x; /\\$/ { N; s/\\\n//; tx }' "$(eval echo $DOCKERFILE)" \
+	    | grep -v '^\(FROM\|RUN\|ADD\|COPY\)' \
+	    >> $DIR/Dockerfile
+done
 
 for PORT in $EXPOSE_PORTS ; do
 	echo EXPOSE $PORT >> $DIR/Dockerfile
