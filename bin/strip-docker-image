@@ -56,13 +56,13 @@
 #
 
 function usage() {
-	echo "usage: $(basename $0) -i image-name -t stripped-image-name [-p package | -f file] [-v]" >&2
+	echo "usage: $(basename $0) -i image-name -t stripped-image-name [-p package | -f file] [-v -u]" >&2
 	echo "	$@" >&2
 }
 
 function parse_commandline() {
 
-	while getopts "vi:t:p:f:x:" OPT; do
+	while getopts "vi:t:p:f:x:u" OPT; do
 	    case "$OPT" in
 		v)
 		    VERBOSE=-v
@@ -81,6 +81,10 @@ function parse_commandline() {
 		    ;;
 		x)
 		    EXPOSE_PORTS="$EXPOSE_PORTS $OPTARG"
+		    ;;
+		u)
+		    USE_UPX=1
+		    type upx >/dev/null 2>&1 || { echo >&2 "require 'upx' but it's not installed.  Aborting."; exit 1; }
 		    ;;
 		*)
 		    usage
@@ -104,7 +108,7 @@ function parse_commandline() {
 		usage "Missing -p or -f options"
 		exit 1
 	fi
-	export PACKAGES FILES VERBOSE
+	export PACKAGES FILES VERBOSE USE_UPX
 }
 
 parse_commandline "$@"
@@ -118,6 +122,26 @@ docker run -v $PWD/$DIR/export:/export \
 	  --entrypoint="/bin/bash" \
 	  $IMAGE_NAME \
 	  /mybin/strip-docker-image-export -d /export $VERBOSE $PACKAGES $FILES
+
+if [ -n "$USE_UPX" ]; then
+    find $DIR/export -type f -exec file -i '{}' \; \
+        | grep "application/x-executable" \
+        | cut -d: -f1 \
+        | xargs -I binary -n1 upx $VERBOSE --best binary
+
+    for lib in $(find $DIR/export -type f -exec file -i '{}' \; \
+                    | grep "application/x-sharedlib" \
+                    | cut -d: -f1 ); do
+
+        if [ -x "$lib" ]; then
+               upx -f $VERBOSE --best $lib
+        else
+               chmod u+x $lib
+               upx -f $VERBOSE --best $lib
+               chmod u-x $lib
+        fi
+    done
+fi
 
 cat > $DIR/Dockerfile <<!
 FROM scratch
