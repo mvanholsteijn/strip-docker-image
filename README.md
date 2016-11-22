@@ -9,6 +9,7 @@ This utilities strips everything you do not need from an image and create a new 
 						[-f file]
 						[-x expose-port]
 						[-v]
+						[-u]
 
 ## Options
 	-i image-name			to strip
@@ -17,6 +18,7 @@ This utilities strips everything you do not need from an image and create a new 
 	-f file					file to include from image, multiple -f allowed.
 	-x port					to expose.
 	-v						verbose.
+	-u                      compress executables and libs with upx (need to be installed)
 
 ## Description
 creates a new Docker image which contains only selected packages and files from the source image.
