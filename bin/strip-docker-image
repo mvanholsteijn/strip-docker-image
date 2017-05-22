@@ -138,6 +138,14 @@ for PORT in $EXPOSE_PORTS ; do
 	echo EXPOSE $PORT >> $DIR/Dockerfile
 done
 
+EXPOSE=$(docker inspect -f '{{range $key, $value := .Config.ExposedPorts}}{{$key}} {{end}}' $IMAGE_NAME | sed -e 's/\/[a-z]* / /g')
+ENTRYPOINT=$(docker inspect --format='{{if .Config.Entrypoint}}ENTRYPOINT {{json .Config.Entrypoint}}{{end}}' $IMAGE_NAME)
+CMD=$(docker inspect --format='{{if .Config.Cmd}}CMD {{json .Config.Cmd}}{{end}}' $IMAGE_NAME)
+
+[ -z "$EXPOSE" ] || echo "EXPOSE $EXPOSE" >> $DIR/Dockerfile
+[ -z "$ENTRYPOINT" ] || echo $ENTRYPOINT >> $DIR/Dockerfile
+[ -z "$CMD" ] || echo $CMD >> $DIR/Dockerfile
+
 (
 	cd $DIR
 	docker build --no-cache -t $TARGET_IMAGE_NAME .
