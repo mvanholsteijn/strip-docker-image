@@ -101,6 +101,10 @@ function parse_commandline() {
 }
 
 function print_file() {
+		if [ "$1" = "/usr/bin/ldd" ]; then
+			exit
+		fi
+
 		if [ -e "$1" ] ; then
 			echo "$1"
 		else
@@ -138,10 +142,15 @@ function list_dependencies() {
 }
 
 function list_packages() {
-		if command -v /usr/bin/dpkg -L $1 >/dev/null 2>&1; then
+		if test -e /usr/bin/dpkg; then
 			DEPS=$(/usr/bin/dpkg -L $1)
-		else
+		elif test -e /usr/bin/rpm; then
 			DEPS=$(/usr/bin/rpm -ql $1)
+		elif test -e /sbin/apk; then
+			DEPS=$(/sbin/apk info -L $1 | grep -Ev '^$|contains:' | sed 's/^/\//g')
+		else
+			echo 'WARN: Unknown OS, aborted list_packages()'
+			exit
 		fi
 		while read FILE ; do
 			if [ ! -d "$FILE" ] ; then
